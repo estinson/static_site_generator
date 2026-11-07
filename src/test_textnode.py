@@ -20,17 +20,20 @@ class TestTextNode(unittest.TestCase):
         node = TextNode("This is a text node", TextType.BOLD)
         self.assertEqual(node.text_type.value, TextType.BOLD.value)
 
+class TestTexNodeConversion(unittest.TestCase):
     def test_text_to_html(self):
         bold_node = TextNode("This is a text node", TextType.BOLD)
         self.assertEqual(
             text_node_to_html_node(bold_node).to_html(),
             '<b>This is a text node</b>'
         )
+
         link_node = TextNode("This is a link node", TextType.LINK, 'assets/page')
         self.assertEqual(
             text_node_to_html_node(link_node).to_html(),
             '<a href="assets/page">This is a link node</a>'
         )
+
         image_node = TextNode("This is an image node", TextType.IMAGE, 'assets/image')
         self.assertEqual(
             text_node_to_html_node(image_node).to_html(),
