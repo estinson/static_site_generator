@@ -6,6 +6,7 @@ from text_processing import (
     extract_markdown_images,
     extract_markdown_links,
     text_to_textnodes,
+    markdown_to_blocks
 )
 from textnode import TextNode, TextType
 
@@ -13,6 +14,25 @@ from textnode import TextNode, TextType
 # Debugging commands for testing out all node results while writing
 # print()
 # [print(node) for node in new_nodes]
+
+class TestMarkdownToBlocks(unittest.TestCase):
+    def test_it_works(self):
+        markdown = """
+This is **bolded** paragraph
+
+This is another paragraph with _italic_ text and `code` here
+This is the same paragraph on a new line
+
+
+
+
+
+
+- This is a list
+- with items
+"""
+        result = markdown_to_blocks(markdown)
+        self.assertEqual(len(result), 3)
 
 class TestTextToTextNode(unittest.TestCase):
     def test_it_works(self):

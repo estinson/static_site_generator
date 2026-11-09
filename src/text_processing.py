@@ -6,6 +6,12 @@ class MarkdownCharacter(Enum):
     ITALIC = "_"
     CODE = "`"
 
+def markdown_to_blocks(markdown: str) -> list[str]:
+    rv:list[str] = []
+    for char in markdown.split('\n\n'):
+        len(char) > 0 and rv.append(char.strip())
+    return rv
+
 def text_to_textnodes(text: str) -> list[TextNode]:
     return_nodes:list[TextNode] = []
     new_origin_node = TextNode(text=text, text_type=TextType.TEXT)
