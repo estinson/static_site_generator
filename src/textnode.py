@@ -9,6 +9,15 @@ class TextType(Enum):
     LINK = "[anchor text](url)"
     IMAGE = "![alt text](url)"
 
+class BlockType(Enum):
+    HEADING = "#"
+    CODE = "```"
+    QUOTE = ">"
+    UNORDERED_LIST = "- "
+    ORDERED_NUM_LIST = "1. "
+    ORDERED_ALPHA_LIST = "a. "
+    PARAGRAPH = ""
+
 class TextNode:
     def __init__(self, text: str, text_type: TextType, url: str | None = None) -> None:
         self.text = text

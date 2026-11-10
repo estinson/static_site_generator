@@ -1,10 +1,17 @@
 from enum import Enum
-from textnode import TextNode, TextType
+from textnode import TextNode, TextType, BlockType
 
 class MarkdownCharacter(Enum):
     BOLD = "**"
     ITALIC = "_"
     CODE = "`"
+
+def block_to_block_type(text: str) -> BlockType:
+    characters = [char.value for char in BlockType]
+    for char in characters:
+        if char in text[:len(char)]:
+            return BlockType(char)
+    return BlockType.PARAGRAPH
 
 def markdown_to_blocks(markdown: str) -> list[str]:
     rv:list[str] = []

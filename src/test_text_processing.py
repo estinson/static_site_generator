@@ -6,14 +6,68 @@ from text_processing import (
     extract_markdown_images,
     extract_markdown_links,
     text_to_textnodes,
-    markdown_to_blocks
+    markdown_to_blocks,
+    block_to_block_type,
 )
-from textnode import TextNode, TextType
+from textnode import TextNode, TextType, BlockType
 
 # NOTE:
 # Debugging commands for testing out all node results while writing
 # print()
 # [print(node) for node in new_nodes]
+
+class TestBlockToBlockType(unittest.TestCase):
+    def test_it_works(self):
+        markdown = """
+# This is a heading
+
+## This is also a heading
+
+```
+This is a code block
+```
+
+- This is a list
+- with items
+
+>This is quote text
+
+1. This
+2. is
+3. an
+4. ordered
+5. list
+
+a. This
+b. is
+c. also
+d. an
+e. ordered
+f. list
+
+
+``
+failed code
+```
+
+--failed list
+
+    - Tabbed UNORDERED_LIST
+"""
+        blocks = markdown_to_blocks(markdown)
+        result = [block_to_block_type(block) for block in blocks]
+
+        self.assertEqual(result[0].name, 'HEADING')
+        self.assertEqual(result[1].name, 'HEADING')
+        self.assertEqual(result[2].name, 'CODE')
+        self.assertEqual(result[3].name, 'UNORDERED_LIST')
+        self.assertEqual(result[4].name, 'QUOTE')
+        self.assertEqual(result[5].name, 'ORDERED_NUM_LIST')
+        self.assertEqual(result[6].name, 'ORDERED_ALPHA_LIST')
+        self.assertEqual(result[7].name, 'PARAGRAPH')
+        self.assertEqual(result[8].name, 'PARAGRAPH')
+        self.assertEqual(result[9].name, 'UNORDERED_LIST')
+
 
 class TestMarkdownToBlocks(unittest.TestCase):
     def test_it_works(self):
