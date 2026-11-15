@@ -24,7 +24,7 @@ def text_to_textnodes(text: str) -> list[TextNode]:
     new_origin_node = TextNode(text=text, text_type=TextType.TEXT)
     processing_nodes:list[TextNode] = [new_origin_node]
     for char in [char.value for char in MarkdownCharacter]:
-        if char in text:
+        if text.count(char) % 2 == 0:
             processing_nodes = split_nodes_delimiter(processing_nodes, char, TextType[MarkdownCharacter(char).name])
     processing_nodes = split_nodes_image(processing_nodes)
     return_nodes = split_nodes_link(processing_nodes)
