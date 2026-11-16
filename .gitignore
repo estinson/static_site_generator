@@ -1,5 +1,5 @@
 __pycache__
 
 # Prevent assets from being added
-public
+docs
 static

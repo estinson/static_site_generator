@@ -1,20 +1,23 @@
 import os
+import sys
 import shutil
 from markdown_to_html import markdown_to_html
 
 def main() -> None:
+    basepath = sys.argv[1] if len(sys.argv) > 1 else '/'
     if (initialize_public_assets()):
         for file in list_files_recursive('content'):
             if file[-3:] == ".md":
                 print(f'Generating html file {generate_html_file(
                     file,
                     'template.html',
-                    file[:-3].replace('content', 'public') + '.html'
+                    file[:-3].replace('content', 'docs') + '.html',
+                    basepath
                 )}')
     else:
         print('Public asset creation failed, closing')
 
-def generate_html_file(md_path:str, template_path:str, dest_path:str) -> str:
+def generate_html_file(md_path:str, template_path:str, dest_path:str, basepath:str) -> str:
     if(open(md_path).read(2) == '# '):
         md_parsed = markdown_to_html(open(md_path).read())
         title = md_parsed.children[0].children[0].value
@@ -28,9 +31,11 @@ def generate_html_file(md_path:str, template_path:str, dest_path:str) -> str:
 
         html_parsed = html_parsed.replace('{{ Title }}', title)
         html_parsed = html_parsed.replace('{{ Content }}', md_parsed.to_html())
+        html_parsed = html_parsed.replace('href="/', f'href="{basepath}')
+        html_parsed = html_parsed.replace('src="/', f'src="{basepath}')
 
         try:
-            public_file = md_path.replace('static', 'public')
+            public_file = md_path.replace('static', 'docs')
             dir_path = os.path.dirname(dest_path)
             os.makedirs(dir_path, exist_ok=True)
 
@@ -45,12 +50,12 @@ def generate_html_file(md_path:str, template_path:str, dest_path:str) -> str:
 
 def initialize_public_assets() -> bool:
     rv = False
-    shutil.rmtree('public')
-    os.mkdir('public')
+    if os.path.exists('docs'): shutil.rmtree('docs')
+    os.mkdir('docs')
     static_files = list_files_recursive('static')
     for static_file in static_files:
         try:
-            public_file = static_file.replace('static', 'public')
+            public_file = static_file.replace('static', 'docs')
             if(os.path.exists(public_file)): print(f'{public_file} path not found'); continue
             dir_path = os.path.dirname(public_file)
             os.makedirs(dir_path, exist_ok=True)
