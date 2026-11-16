@@ -117,8 +117,8 @@ def extract_markdown_images(text: str) -> list[tuple[str]]:
     alt_text = None
     url = None
     for i in range(len(text)):
-        if text[i] == "!":
-            mode = (1 if text[i] == "!" and text[i + 1] == "[" else 0)
+        if text[i] == "!" and i < len(text) - 1:
+            mode = (1 if text[i + 1] == "[" else 0)
         if text[i] == "[" and mode == 1:
             mode = 2
             j = text[i:].find(']')

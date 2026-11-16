@@ -8,7 +8,7 @@ from textnode import (
 from htmlnode import HTMLNode, ParentNode, LeafNode
 
 def markdown_to_html(markdown: str) -> HTMLNode:
-    debug:bool = True
+    debug:bool = False
     blocks:list[str] = markdown_to_blocks(markdown)
     html_blocks:list[HTMLNode] = []
     for block in blocks:
@@ -27,14 +27,14 @@ def markdown_to_html(markdown: str) -> HTMLNode:
                 )
             case BlockType.CODE:
                 html_blocks.append(
-                    ParentNode(tag='pre', children=block_text_to_html(text=block.split("\n")[1:-1], tag='code'))
+                    ParentNode(tag='pre', children=block_text_to_html(text="\n".join(block.split("\n")[1:-1]), tag='code'))
                 )
             case BlockType.QUOTE:
                 html_blocks.append(
                     ParentNode(
                         tag='blockquote',
                         children=block_text_to_html(
-                            text=[string[len(block_type.value):] for string in block.split('\n')],
+                            text=[string[len(block_type.value) + 1:] for string in block.split('\n')],
                         )
                     )
                 )
@@ -87,6 +87,9 @@ def markdown_to_html(markdown: str) -> HTMLNode:
 
 def block_text_to_html(text:list[str], tag:str = None) -> list[HTMLNode]:
     list_return:list[HTMLNode] = []
+    if tag == 'code':
+        return [text_node_to_html_node(node) for node in text_to_textnodes(text)]
+
     for string in text:
         nodes = [text_node_to_html_node(node) for node in text_to_textnodes(string)]
         if tag:
